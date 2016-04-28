@@ -16,7 +16,7 @@ DEFAULT_XPATH = ('//p/descendant-or-self::*/ancestor-or-self::* | //p[last()]/pr
 DEFAULT_FILE_NAME = 'index'
 
 
-class mini_readability(object):
+class MiniReadability(object):
 
     def __init__(self, url, conf=None):
         self.url = url
@@ -34,7 +34,7 @@ class mini_readability(object):
         if conf:
             _config.read(conf)
         for section in _config.sections():
-            c = {}
+            c = dict()
             c['name'] = section
             c['xpath'] = _config.get(section, 'xpath')
             config.append(c)
@@ -110,7 +110,7 @@ class mini_readability(object):
                 # Если таг элемента — ссылка, то проверяем на наличие текста и окончания.
                 # Ссылки всё равно могут превышать 80 символов.
                 if v.tag == "a":
-                    raw_str +="[{}] ".format(v.attrib.get('href',''))
+                    raw_str += "[{}] ".format(v.attrib.get('href', ''))
                     # Есть текст и окончание? вероятнее всего это целое предложение, проверяем на конец строки.
                     if v.text and v.tail:
                         sam_str = v.text + v.tail
@@ -209,11 +209,9 @@ class mini_readability(object):
         Основная функция.
         :return: None
         """
-        result = None
         page = self._get_page(self.url)
         values = self._parse_xpath(page, self.xpath)
         raw_str = self._parse_str(values)
         format_str = self._format_str(raw_str)
         self._save_file(format_str)
         return None
-
